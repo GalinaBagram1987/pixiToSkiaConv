@@ -38,14 +38,14 @@ export interface Figures {
 }
 
 export const FiguresArray: Figures[] = [
-  { type: 'circle', x: 200, y: 200, color: 0xf9bebe, size: 50, vx: 0.6 },
-  { type: 'square', x: 120, y: 520, color: 0xb9a3f5, size: 50, vy: 0.6},
-  { type: 'triangle', x: 500, y: 550, xl:490, yl: 500, xr: 520, yr: 520, color: 0xa788ce, scaleX: 3.5,scaleY: 3.5},
-  { type: 'line', x: 100, y: 100, color:  0xa3f5ad, toX: 50, toY: 150, lineWidth: 8, angle: 360 },
+  { type: 'circle', x: 200, y: 200, color: 0xf9bebe, size: 50, vx: 3 },
+  { type: 'square', x: 120, y: 520, color: 0xb9a3f5, size: 50, vy: 3},
+  { type: 'triangle', x: 500, y: 550, xl:490, yl: 500, xr: 520, yr: 520, color: 0xa788ce },
+  { type: 'line', x: 100, y: 100, color:  0xa3f5ad, toX: 50, toY: 150, lineWidth: 5, angle: 90 },
   { type: 'png', x: 500, y: 300, imageUrl: '/1.png', width: 80, height: 80, angle: 45 },
-  { type: 'png', x: 100, y: 300, imageUrl: '/2.png', width: 80, height: 80, scaleX: 1.5,scaleY: 1.5 },
-  { type: 'png', x: 300, y: 300, imageUrl: '/3.png', width: 80, height: 80, angle: 45, scaleX: 1.5,scaleY: 1.5 },
-  { type: 'text', x: 200, y:550, text: 'Привет', fontSize: 32, fill: 0x000000, fontWeight: 'bold', fontFamily: 'Arial', angle: 15, }
+  { type: 'png', x: 100, y: 300, imageUrl: '/2.png', width: 80, height: 80, angle: 45 },
+  { type: 'png', x: 300, y: 300, imageUrl: '/3.png', width: 80, height: 80, angle: 45 },
+  { type: 'text', x: 200, y:450, text: 'Привет', fontSize: 32, fill: 0x000000, fontWeight: 'bold', fontFamily: 'Arial', angle: 15, }
 ]
 
 // получаем рандомную фигуру
@@ -77,43 +77,68 @@ export const getRandomFigure = (arr: Figures[]):Figures => {
 
 export const renderPixiFigure = async (container: PIXI.Container, figure: Figures): Promise<void> => {
   const app = usePixiStore.getState().app;
+  // Локальные переменные для скорости
+  let vx = figure.vx || 0;
+  let vy = figure.vy || 0;
+
   switch(figure.type) {
     case 'circle':
       const circle = new PIXI.Graphics();
-      circle.circle(figure.x, figure.y, figure.size || 30)
+      const radius = figure.size || 30;
+      circle.circle(0, 0, radius)
       .fill({ color: figure.color });
-
-      // двигаем
-      if (app && (figure.vx || figure.vy)) {
+      
+      circle.x = figure.x;
+      circle.y = figure.y;
+     
+      // Проверяем локальные переменные
+      if (app && (vx !== 0 || vy !== 0)) {
       app.ticker.add((time) => {
-        circle.x += (figure.vx || 0) * time.deltaTime;
-        circle.y += (figure.vy || 0) * time.deltaTime;   
-        // Когда круг уходит за край — возвращаем его
-        if (circle.x > app.screen.width) circle.x = 0;
-        if (circle.x < 0) circle.x = app.screen.width;
-        if (circle.y > app.screen.height) circle.y = 0;
-        if (circle.y < 0) circle.y = app.screen.height;
-        });
+      circle.x += vx * time.deltaTime;
+      circle.y += vy * time.deltaTime;
+      
+      // Отскок по краям (учитываем половину размера)
+      if (circle.x + radius > app.screen.width || circle.x - radius < 0) {
+        vx *= -1;  // меняем направление
+        circle.x = Math.min(Math.max(circle.x, radius), app.screen.width - radius);
       }
+      
+      if (circle.y + radius > app.screen.height || circle.y - radius < 0) {
+        vy *= -1;  // меняем направление
+        circle.y = Math.min(Math.max(circle.y, radius), app.screen.height - radius);
+      }
+    });
+  }
       container.addChild(circle);
       break;
 
     case 'square':
       const square = new PIXI.Graphics();
-      square.rect(figure.x, figure.y, figure.size || 30, figure.size || 50)
+      const size = figure.size || 30;
+      const halfSize = size / 2;
+      square.rect(-halfSize, -halfSize, size, size)
       .fill({ color: figure.color });
-      // двигаем
-      if (app && (figure.vx || figure.vy)) {
+      square.x = figure.x;
+      square.y = figure.y;
+
+      // Проверяем локальные переменные
+      if (app && (vx !== 0 || vy !== 0)) {
       app.ticker.add((time) => {
-        square.x += (figure.vx || 0) * time.deltaTime;
-        square.y += (figure.vy || 0) * time.deltaTime;   
-        // Когда  уходит за край — возвращаем его
-        if (square.x > app.screen.width) square.x = 0;
-        if (square.x < 0) square.x = app.screen.width;
-        if (square.y > app.screen.height) square.y = 0;
-        if (square.y < 0) square.y = app.screen.height;
-        });
+      square.x += vx * time.deltaTime;
+      square.y += vy * time.deltaTime;
+      
+      // Отскок по краям (учитываем половину размера)
+      if (square.x + halfSize > app.screen.width || square.x - halfSize < 0) {
+        vx *= -1;  // меняем направление
+        square.x = Math.min(Math.max(square.x, halfSize), app.screen.width - halfSize);
       }
+      
+      if (square.y + halfSize > app.screen.height || square.y - halfSize < 0) {
+        vy *= -1;  // меняем направление
+        square.y = Math.min(Math.max(square.y, halfSize), app.screen.height - halfSize);
+      }
+    });
+  }
       container.addChild(square);
       break;
 
@@ -122,6 +147,15 @@ export const renderPixiFigure = async (container: PIXI.Container, figure: Figure
       if (figure.x && figure.y && figure.xr && figure.yr && figure.xl && figure.yl) {
         triangle.poly([figure.x, figure.y, figure.xr, figure.yr, figure.xl, figure.yl])
         .fill({ color: figure.color });
+        // добавляем масштабирование
+        triangle.scale.set(figure.scaleX || 1, figure.scaleY || 1);
+        // 1. Находим геометрический центр треугольника (масштабирование от центра)
+        const centerX = (figure.x + figure.xl + figure.xr) / 3;
+        const centerY = (figure.y + figure.yl + figure.yr) / 3;
+        // 2. Устанавливаем pivot (точка от кот масштабируем) в центр
+        triangle.pivot.set(centerX, centerY);
+        // 3. Устанавливаем позицию фигуры в ту же точку
+        triangle.position.set(centerX, centerY);
         container.addChild(triangle);
       } else {
         console.error('Недостаточно точек для треугольника');
@@ -136,8 +170,12 @@ export const renderPixiFigure = async (container: PIXI.Container, figure: Figure
         color: figure.color ?? 0x000000, 
         width: figure.lineWidth ?? 2 
       });
+       // Поворот линии (в градусах)
+      line.angle = figure.angle || 0;
+      
       container.addChild(line);
       break;
+
     case 'png':
        if (!figure.imageUrl) {
         console.error('PNG: imageUrl не указан');
@@ -146,10 +184,36 @@ export const renderPixiFigure = async (container: PIXI.Container, figure: Figure
       try {
         const texture = await PIXI.Assets.load(figure.imageUrl);
         const sprite = new PIXI.Sprite(texture);
+       
+        // Базовый размер
+        const baseWidth = figure.width || 30;
+        const baseHeight = figure.height || 30;
+
+        // Сначала устанавливаем размер
+        sprite.width = baseWidth;
+        sprite.height = baseHeight;
+
+        // центр
+        sprite.pivot.set(baseWidth / 2, baseHeight / 2);
+        // центр картинки будет в этой точке
         sprite.x = figure.x ?? 0;
-        sprite.y = figure.y ?? 0;
-        if (figure.width) sprite.width = figure.width;
-        if (figure.height) sprite.height = figure.height;
+        sprite.y = figure.y ?? 0;    
+
+        // поворот в градусах
+        sprite.angle = figure.angle || 0;
+
+        if (app) {
+          let time = 0;
+          app.ticker.add(() => {
+            time += 0.1;
+            // Пульсация от 0.8 до 1.2 от базового размера
+            const scale = 0.8 + Math.sin(time) * 0.2;
+            sprite.width = baseWidth * scale;
+            sprite.height = baseHeight * scale;
+            // Обновляем pivot при изменении размера
+            sprite.pivot.set(sprite.width / 2, sprite.height / 2);
+          });
+        }     
         container.addChild(sprite);
       } catch (error) {
         console.error('Ошибка загрузки PNG:', figure.imageUrl, error);
