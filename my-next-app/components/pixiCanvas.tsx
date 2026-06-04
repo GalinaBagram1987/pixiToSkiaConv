@@ -6,6 +6,7 @@ import { usePixiStore } from '@/store/pixiStore';
 
 const CanvasPixi = (): React.JSX.Element => {
   const setContainer = usePixiStore((state) => state.setContainer);
+  const setApp = usePixiStore((state) => state.setApp);
   const containerRef = useRef<HTMLDivElement>(null);
   const appRef = useRef<PIXI.Application | null>(null);
 
@@ -29,6 +30,7 @@ const CanvasPixi = (): React.JSX.Element => {
         containerRef.current.appendChild(app.canvas);
         appRef.current = app;
         setContainer(app.stage);  // сохраняем в store
+        setApp(app); 
       }
     };
 
