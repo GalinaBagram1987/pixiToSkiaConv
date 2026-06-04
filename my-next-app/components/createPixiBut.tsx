@@ -3,14 +3,21 @@ import { usePixiStore } from "@/store/pixiStore";
 
 
 const CreatePixiBut = (): React.JSX.Element => { // ← тип для компонента
-  const { container, addFigure, figures } = usePixiStore();
   const handleClick = async (): Promise<void> => {
-    if (!container) return;
-    const randomFigure = getRandomFigure(FiguresArray);
-    await renderPixiFigure(container, randomFigure);
-    addFigure(randomFigure);  // сохраняем фигуру для Skia
-    console.log('Всего фигур:', figures.length + 1);
-  }
+  const { addFigure, container } = usePixiStore.getState();
+  
+  const randomFigure = getRandomFigure(FiguresArray);
+  if (!randomFigure || !container) return;
+  
+  // Очищаем ВСЁ перед добавлением новой фигуры
+  // так как мы работаем с состоянием и там плюсуется фигура и
+  // рендерится весь новый объект надо старое удалить, очистить контейнер
+  container.removeChildren();
+  
+  await renderPixiFigure(container, randomFigure);
+  addFigure(randomFigure);
+  };
+  
   return(
     <button 
       onClick={handleClick}
