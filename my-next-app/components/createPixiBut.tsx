@@ -2,10 +2,10 @@ import { renderPixiFigure, getRandomFigure, FiguresArray } from "./pixiData";
 import { usePixiStore } from "@/store/pixiStore";
 
 
-const CreatePixiBut = () => {
+const CreatePixiBut = (): React.JSX.Element => { // ← тип для компонента
   const { container, addFigure, figures } = usePixiStore();
-  const handleClick = async () => {
-     if (!container) return;
+  const handleClick = async (): Promise<void> => {
+    if (!container) return;
     const randomFigure = getRandomFigure(FiguresArray);
     await renderPixiFigure(container, randomFigure);
     addFigure(randomFigure);  // сохраняем фигуру для Skia

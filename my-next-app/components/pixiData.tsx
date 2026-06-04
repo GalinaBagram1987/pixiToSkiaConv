@@ -33,10 +33,31 @@ export const FiguresArray: Figures[] = [
   { type: 'png', x: 300, y: 300, imageUrl: '/3.png', width: 80, height: 80 },
 ]
 
+// получаем рандомную фигуру
+const usedIndex: number[] = [];
 
 export const getRandomFigure = (arr: Figures[]):Figures => {
-  const randomIndex = Math.floor(Math.random()*FiguresArray.length);
-  return FiguresArray[randomIndex];
+    // Находим ещё не использованные индексы
+  const notUseIndex = arr.reduce<number[]>((acc, _, index) => {
+    if (!usedIndex.includes(index)) {
+      acc.push(index);
+    }
+    return acc;
+  }, []);
+
+  // Выбираем случайный из доступных
+  const randomIndex = notUseIndex[Math.floor(Math.random() * notUseIndex.length)];
+  
+  // Сохраняем использованный индекс
+  usedIndex.push(randomIndex);
+
+  // Если все индексы уже использованы, сбрасываем историю
+  if (usedIndex.length === arr.length) {
+    usedIndex.length = 0; // очищаем массив
+  }
+  
+  return arr[randomIndex];
+
 };
 
 export const renderPixiFigure = async (container: PIXI.Container, figure: Figures): Promise<void> => {

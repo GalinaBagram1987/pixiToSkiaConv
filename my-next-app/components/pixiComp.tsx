@@ -4,7 +4,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 import CanvasPixi from "./pixiCanvas";
 
 
-const PixiComp = () => {
+const PixiComp = (): React.JSX.Element => {
   
   return(
     <Card className="flex bg-button-dark shadow mx-4">
@@ -13,7 +13,7 @@ const PixiComp = () => {
           Pixi.js
         </CardTitle>
       </CardHeader>
-      <CardContent className="min-h-[200px] w-full px-2 py-2" style={{ width: 608 }}>
+      <CardContent className="min-h-[200px] px-2 py-2" style={{ width: 608 }}>
         {/* Здесь canvas для Pixi */}
         <CanvasPixi />
       </CardContent>

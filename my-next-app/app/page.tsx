@@ -2,7 +2,7 @@
 
 import CreatePixiBut from "@/components/createPixiBut";
 import ConvertSkiaBut from "@/components/convertSkiaBut";
-import ResertBut from "@/components/resertBut";
+import ResertBut from "@/components/clearBut";
 import ExpPdfBut from "@/components/exportPdfBut";
 import PixiComp from "@/components/pixiComp";
 import SkiaComp from "@/components/skiaComp";

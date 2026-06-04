@@ -1,5 +1,5 @@
 
-const ExpPdfBut = () => {
+const ExpPdfBut = (): React.JSX.Element => {
   //const handleClick = () => {
     // экспорт пдф
   //}

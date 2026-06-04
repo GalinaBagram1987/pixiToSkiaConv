@@ -1,6 +1,6 @@
 
 
-const ConvertSkiaBut = () => {
+const ConvertSkiaBut = (): React.JSX.Element => {
   //const handleClick = () => {
     // запускается создание фигуры
   //}

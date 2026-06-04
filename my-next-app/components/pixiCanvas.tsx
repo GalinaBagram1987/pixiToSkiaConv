@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 import * as PIXI from 'pixi.js';
 import { usePixiStore } from '@/store/pixiStore';
 
-const CanvasPixi = () => {
+const CanvasPixi = (): React.JSX.Element => {
   const setContainer = usePixiStore((state) => state.setContainer);
   const containerRef = useRef<HTMLDivElement>(null);
   const appRef = useRef<PIXI.Application | null>(null);
