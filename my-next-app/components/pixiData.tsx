@@ -203,7 +203,7 @@ export const renderPixiFigure = async (container: PIXI.Container, figure: Figure
       line.x = figure.x ?? 0;
       line.y = figure.y ?? 0;
       line.angle = figure.angle || 0;
-  
+
       container.addChild(line);
       break;
     }
