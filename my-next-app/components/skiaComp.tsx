@@ -1,6 +1,7 @@
 'use client';
 
 import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
+import SkiaCanvas from "./skiaCanvas";
 
 const SkiaComp = () => {
   
@@ -12,11 +13,8 @@ const SkiaComp = () => {
         </CardTitle>
       </CardHeader>
       <CardContent className="min-h-[200px] w-full px-2 py-2">
-        {/* Здесь будет ваш canvas для Skia */}
-        jjfjyruyttttttttttttttttttttttttrrrrrr
-        hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
-        hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
-        httttttttttttttttttttttttttttttttt
+        {/* canvas для Skia */}
+        <SkiaCanvas />
       </CardContent>
     </Card>
   )

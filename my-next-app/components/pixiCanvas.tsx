@@ -102,7 +102,7 @@ const CanvasPixi = (): React.JSX.Element => {
 
   }, [figures, container]);
 
-  return <div ref={containerRef} className="w-full h-full min-h-[600px]" />;
+  return <div ref={containerRef} className="w-full h-full min-h-[600px] shadow-lg rounded" />;
 };
 
 export default CanvasPixi;

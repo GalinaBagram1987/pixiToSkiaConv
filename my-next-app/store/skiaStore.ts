@@ -3,11 +3,13 @@ import { Figures } from '@/components/pixiData';
 
 interface SkiaStore {
   // Состояние
+  skiaContainer: HTMLCanvasElement | null;
   skiaFigures: Figures[];        // фигуры для отрисовки в Skia
   isRendered: boolean;           // отрисована ли Skia сцена
   skiaNodes: any[];              // готовые Skia-компоненты (опционально)
   
   // Действия
+  setSkiaContainer: (container: HTMLCanvasElement | null) => void;
   setSkiaFigures: (figures: Figures[]) => void;
   addSkiaFigure: (figure: Figures) => void;
   clearSkiaFigures: () => void;
@@ -16,9 +18,12 @@ interface SkiaStore {
 }
 
 export const useSkiaStore = create<SkiaStore>((set, get) => ({
+  skiaContainer: null,
   skiaFigures: [],
   isRendered: false,
   skiaNodes: [],
+
+  setSkiaContainer: (container) => set({ skiaContainer: container }),
   
   setSkiaFigures: (figures) => set({ 
     skiaFigures: figures, 
