@@ -6,7 +6,10 @@ import { useSkiaStore } from '@/store/skiaStore';
 const SkiaCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [status, setStatus] = useState('Загрузка Skia...');
-  const { setSkiaContainer } = useSkiaStore();
+  // const { setSkiaContainer } = useSkiaStore();
+  // ДОБАВЛЯЕМ setSurface и setCanvasKit
+  const { setSkiaContainer, setSurface, setCanvasKit } = useSkiaStore();
+
 
   useEffect(() => {
     // Флаг для предотвращения обновления после размонтирования.
@@ -51,25 +54,18 @@ const SkiaCanvas = () => {
           
           // Очищаем белым
           canvas.clear(CanvasKit.WHITE);
-          
-      //     // Рисуем красный квадрат
-      //     paint.setColor(CanvasKit.Color(0xFF0000));
-      //     canvas.drawRect(CanvasKit.XYWHRect(50, 50, 100, 100), paint);
-          
-      //     // Рисуем синий круг
-      //     paint.setColor(CanvasKit.Color(0, 0, 1, 1));
-      //     canvas.drawCircle(300, 300, 50, paint);
-          
-      //     // Рисуем зелёную линию
-      //     paint.setColor(CanvasKit.Color(0, 1, 0, 1));
-      //     paint.setStrokeWidth(4);
-      //     canvas.drawLine(200, 500, 400, 500, paint);
-          
           surface.flush();
           setStatus('Готово (CPU mode)');
           
-      //     // Сохраняем в store
-          if (setSkiaContainer) setSkiaContainer(surface);
+       // Сохраняем в store
+       // сохраняем HTMLCanvasElement, а не surface
+          // skiaContainer нужен для Canvas 2D API (renderSkiaFromPixi)
+          if (setSkiaContainer) setSkiaContainer(canvasRef.current);
+          
+          // Сохраняем surface и CanvasKit для продвинутого рендера (если понадобится)
+          if (setSurface) setSurface(surface);
+          if (setCanvasKit) setCanvasKit(CanvasKit);
+          // if (setSkiaContainer) setSkiaContainer(surface);
         } else {
            setStatus('Ошибка создания поверхности');
          }
