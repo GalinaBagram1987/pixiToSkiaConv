@@ -3,7 +3,8 @@
 import { useEffect, useRef } from 'react';
 import * as PIXI from 'pixi.js';
 import { usePixiStore } from '@/store/pixiStore';
-import { renderPixiFigure, Figures } from './pixiData';
+import Figures from '@/type/figureInterf';
+import renderPixiFigure from '@/renders/renderPixi';
 
 
 
@@ -51,6 +52,8 @@ const CanvasPixi = (): React.JSX.Element => {
         resolution: window.devicePixelRatio || 1, 
         autoDensity: true, 
       });
+      console.log('Ticker запущен?', app.ticker.started); // должно быть true
+      console.log('Ticker работает?', app.ticker.started); // должно быть true
       
       if (!containerRef.current) {
         app.destroy(true, { children: true, texture: true });

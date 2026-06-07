@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Figures } from '@/components/pixiData';
+import Figures from '@/type/figureInterf';
 
 interface SkiaStore {
   // Состояние

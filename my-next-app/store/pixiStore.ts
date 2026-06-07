@@ -1,13 +1,13 @@
 import { create } from 'zustand';
 import * as PIXI from 'pixi.js';
-import { Figures, FiguresArray } from '@/components/pixiData';
+import Figures from '@/type/figureInterf';
 
 interface PixiStore {
   container: PIXI.Container | null;
   app: PIXI.Application | null; 
   figures: Figures[];           
   isInitialized: boolean;       
-  usedIndexIds: string[]; // ИСПРАВЛЕНО: переименовали и сделали массивом строк
+  usedIndexIds: string[]; // переименовали и сделали массивом строк
   
   // Actions
   setContainer: (container: PIXI.Container | null) => void;
@@ -16,7 +16,7 @@ interface PixiStore {
   clearFigures: () => void;
   resetContainer: () => void;
   getFiguresForSkia: () => Figures[];  
-  addUsedIndex: (id: string) => void; // ИСПРАВЛЕНО: принимает string вместо number
+  addUsedIndex: (id: string) => void; // принимает string вместо number
   resetUsedIndex: () => void;
 }
 
@@ -25,7 +25,7 @@ export const usePixiStore = create<PixiStore>((set, get) => ({
   app: null,
   figures: [],
   isInitialized: false,
-  usedIndexIds: [], // ИСПРАВЛЕНО
+  usedIndexIds: [], 
   
   setContainer: (container) => set({ 
     container,

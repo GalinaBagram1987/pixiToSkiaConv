@@ -1,4 +1,5 @@
-import { renderPixiFigure, getRandomFigure, FiguresArray } from "./pixiData";
+import { getRandomFigure, FiguresArray } from "./pixiData";
+import renderPixiFigure from "@/renders/renderPixi";
 import { usePixiStore } from "@/store/pixiStore";
 
 
