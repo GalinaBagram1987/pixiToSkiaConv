@@ -1,4 +1,4 @@
-import exportToPdf from "@/export/exportToPdf";
+import exportToPdf from "@/exportToPdf/exportToPdf";
 import { useSkiaStore } from "@/store/skiaStore";
 
 const ExpPdfBut = (): React.JSX.Element => {

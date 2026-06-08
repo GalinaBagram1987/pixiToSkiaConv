@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
     return config;
   },
   turbopack: {}, // можно добавить пустой, если нужно
+  output: 'export',
 };
 
 export default nextConfig;
