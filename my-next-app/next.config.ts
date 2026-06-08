@@ -1,7 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: false,
+  turbopack: {}, // можно добавить пустой, если нужно
+  output: 'export',
+  images: {
+    unoptimized: true,
+  },
   webpack: (config: any, { isServer }: { isServer: boolean }) => {
     if (!isServer) {
       config.resolve.fallback = {
@@ -13,8 +18,7 @@ const nextConfig: NextConfig = {
     }
     return config;
   },
-  turbopack: {}, // можно добавить пустой, если нужно
-  output: 'export',
+  
 };
 
 export default nextConfig;
