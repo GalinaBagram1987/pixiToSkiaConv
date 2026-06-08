@@ -6,7 +6,6 @@ import { useSkiaStore } from '@/store/skiaStore';
 const SkiaCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [status, setStatus] = useState('Загрузка Skia...');
-  // const { setSkiaContainer } = useSkiaStore();
   // ДОБАВЛЯЕМ setSurface и setCanvasKit
   const { setSkiaContainer, setSurface, setCanvasKit } = useSkiaStore();
 
@@ -65,7 +64,6 @@ const SkiaCanvas = () => {
           // Сохраняем surface и CanvasKit для продвинутого рендера (если понадобится)
           if (setSurface) setSurface(surface);
           if (setCanvasKit) setCanvasKit(CanvasKit);
-          // if (setSkiaContainer) setSkiaContainer(surface);
         } else {
            setStatus('Ошибка создания поверхности');
          }

@@ -112,21 +112,35 @@ const renderPixiFigure = async (container: PIXI.Container, figure: Figures): Pro
 
       drawTriangle(figure.color ?? 0xa788ce);
 
-      if (animation?.type === 'colorChange') {
-        let isChanged = false;
-        triangle.eventMode = 'static';
-        triangle.cursor = 'pointer';
-    
+      // Автоматическая смена цвета (без клика)
+      if (animation?.type === 'colorChange' && app) {
+        let time = 0;
+        const speed = animation.speed ?? 0.02;
         const originalColor = figure.color ?? 0xa788ce;
         const targetColor = animation.toColor ?? 0xff0000;
     
-      triangle.on('pointerdown', () => {
-        console.log('Клик по треугольнику!');
-        isChanged = !isChanged;
-        drawTriangle(isChanged ? targetColor : originalColor);
-        app?.renderer.render(app?.stage);
+        // Извлекаем RGB компоненты
+        const r1 = (originalColor >> 16) & 0xFF;
+        const g1 = (originalColor >> 8) & 0xFF;
+        const b1 = originalColor & 0xFF;
+    
+        const r2 = (targetColor >> 16) & 0xFF;
+        const g2 = (targetColor >> 8) & 0xFF;
+        const b2 = targetColor & 0xFF;
+    
+        app.ticker.add((ticker) => {
+          time += speed * ticker.deltaTime;
+          // Плавное переключение между цветами
+          const t = (Math.sin(time) + 1) / 2; // от 0 до 1
+          const r = Math.floor(r1 + (r2 - r1) * t);
+          const g = Math.floor(g1 + (g2 - g1) * t);
+          const b = Math.floor(b1 + (b2 - b1) * t);
+          const newColor = (r << 16) | (g << 8) | b;
+      
+          drawTriangle(newColor);
         });
       }
+
     container.addChild(triangle);
     break;
     }
@@ -144,8 +158,8 @@ const renderPixiFigure = async (container: PIXI.Container, figure: Figures): Pro
         line.moveTo(startX, startY)
         .lineTo(endX, endY)
         .stroke({ 
-        color: color, 
-        width: figure.lineWidth ?? 2 
+          color: color, 
+          width: figure.lineWidth ?? 2 
         });
       };
 
@@ -154,22 +168,36 @@ const renderPixiFigure = async (container: PIXI.Container, figure: Figures): Pro
       line.x = figure.x ?? 0;
       line.y = figure.y ?? 0;
 
-      if (animation?.type === 'colorChange') {
-        let isChanged = false;
-        line.eventMode = 'static';
-        line.cursor = 'pointer';
-    
+      // Автоматическая смена цвета
+      if (animation?.type === 'colorChange' && app) {
+        let time = 0;
+        const speed = animation.speed ?? 0.02;
         const originalColor = figure.color ?? 0xa3f5ad;
         const targetColor = animation.toColor ?? 0xff0000;
-    
-        line.on('pointerdown', () => {
-          console.log('Клик по линии!');
-          isChanged = !isChanged;
-          drawLine(isChanged ? targetColor : originalColor);
-            // Принудительная перерисовка
-        app?.renderer.render(app?.stage);
+
+        // Извлекаем RGB компоненты
+        const r1 = (originalColor >> 16) & 0xFF;
+        const g1 = (originalColor >> 8) & 0xFF;
+        const b1 = originalColor & 0xFF;
+
+        const r2 = (targetColor >> 16) & 0xFF;
+        const g2 = (targetColor >> 8) & 0xFF;
+        const b2 = targetColor & 0xFF;
+
+        app.ticker.add((ticker) => {
+          time += speed * ticker.deltaTime;
+          // Плавное переключение между цветами
+          const t = (Math.sin(time) + 1) / 2; // от 0 до 1
+      
+          const r = Math.floor(r1 + (r2 - r1) * t);
+          const g = Math.floor(g1 + (g2 - g1) * t);
+          const b = Math.floor(b1 + (b2 - b1) * t);
+          const newColor = (r << 16) | (g << 8) | b;
+      
+          drawLine(newColor);
         });
       }
+
       container.addChild(line);
       break;
     }

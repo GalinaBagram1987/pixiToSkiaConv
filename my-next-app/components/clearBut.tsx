@@ -3,14 +3,33 @@ import { useSkiaStore } from "@/store/skiaStore";
 
 const ClearBut = (): React.JSX.Element => {
   const { container, clearFigures } = usePixiStore();
-  const { clearSkiaFigures } = useSkiaStore();
+  const { clearSkiaFigures, skiaContainer } = useSkiaStore();
+
+
   const handleClick = (): void => {
-    if (!container) return;
-    container.removeChildren();
-    clearFigures();
+    // 1. Очищаем Pixi контейнер
+    if (container) {
+      container.removeChildren();
+      clearFigures();
+      console.log('фигуры удалены')
+    }
+      
+    // 2. Очищаем Skia canvas
+    if (skiaContainer) {
+      const ctx = skiaContainer.getContext('2d'); // Получает доступ к рисованию
+      if (ctx) {
+        ctx.clearRect(0, 0, skiaContainer.width, skiaContainer.height); // Стирает всё нарисованное
+        // Заливаем белым (опционально)
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, skiaContainer.width, skiaContainer.height); // Заливает canvas белым (опционально
+      }
+    }
+    // 3. Очищаем Skia store
     clearSkiaFigures();
-    console.log('фигуры удалены')
-  }
+    
+    console.log('Pixi и Skia очищены');
+  };
+
   return(
     <button 
       onClick={handleClick}
