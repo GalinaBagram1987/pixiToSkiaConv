@@ -1,83 +1,81 @@
 import Figures from "@/type/figureInterf";
 
 export const renderSkiaFromPixi = (
-  canvas: HTMLCanvasElement,
-  figures: Figures[]
+  surface: any,
+  figures: Figures[],
+  CanvasKit: any,
 ) => {
-  const ctx = canvas.getContext('2d');
-  if (!ctx) return;
-  
-  // Очищаем canvas
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  // создаем холст для всех
+  const canvas = surface.getCanvas();  // холст
+    canvas.clear(CanvasKit.WHITE); // чистим, заливаем белым
+   
+  // настраиваем кисть для всех
+  const fillPaint = new CanvasKit.Paint(); // создаем кисть с правилами
+  fillPaint.setAntiAlias(true); // режим сглаживания
+  fillPaint.setStyle(CanvasKit.PaintStyle.Fill); //  Заливка
   
   figures.forEach((figure) => {
-    const color = `#${(figure.color ?? 0x000000).toString(16).padStart(6, '0')}`;
-    
-    switch (figure.type) {
-      case 'circle': {
-        ctx.beginPath();
-        ctx.arc(figure.x, figure.y, figure.size ?? 30, 0, 2 * Math.PI);
-        ctx.fillStyle = color;
-        ctx.fill();
+    fillPaint.setColor(figure.color ?? CanvasKit.BLUE) // добавляем в нашу кисть цвет из фигуры
+      switch (figure.type) {
+        case 'circle': {
+          // рисуем на нашем пустом канвасе нашей кистью
+          // то есть берем параметры точки: x,y, размер, и все параметры нашей кисти
+          canvas.drawCircle(figure.x, figure.y, figure.size, fillPaint);       
         break;
-      }
-      
-      case 'square': {
-        const size = figure.size ?? 50;
-        ctx.fillStyle = color;
-        ctx.fillRect(figure.x - size/2, figure.y - size/2, size, size);
-        break;
-      }
-      
-      case 'triangle': {
-        const x = figure.x ?? 0;
-        const y = figure.y ?? 0;
-        const xl = figure.xl ?? 0;
-        const yl = figure.yl ?? 0;
-        const xr = figure.xr ?? 0;
-        const yr = figure.yr ?? 0;
-        
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-        ctx.lineTo(xl, yl);
-        ctx.lineTo(xr, yr);
-        ctx.closePath();
-        ctx.fillStyle = color;
-        ctx.fill();
-        break;
-      }
-      
-      case 'line': {
-        ctx.beginPath();
-        ctx.moveTo(figure.x ?? 0, figure.y ?? 0);
-        ctx.lineTo(figure.toX ?? 0, figure.toY ?? 0);
-        ctx.strokeStyle = color;
-        ctx.lineWidth = figure.lineWidth ?? 2;
-        ctx.stroke();
-        break;
-      }
-      
-      case 'text': {
-        const fontSize = figure.fontSize ?? 24;
-        ctx.font = `${figure.fontWeight ?? 'normal'} ${fontSize}px ${figure.fontFamily ?? 'Arial'}`;
-        ctx.fillStyle = color;
-        ctx.fillText(figure.text ?? '', figure.x, figure.y);
-        break;
-      }
-      
-      case 'png': {
-        // Для PNG нужно загрузить изображение
-        if (figure.imageUrl) {
-          const img = new Image();
-          img.src = figure.imageUrl;
-          img.onload = () => {
-            ctx.drawImage(img, figure.x, figure.y, figure.width ?? 80, figure.height ?? 80);
-          };
         }
+      
+        case 'square': {
+          const pathSquare = new CanvasKit.Path();
+          const size = figure.size ?? 30; 
+          // Начинаем с левого верхнего угла
+          pathSquare.moveTo(figure.x, figure.y);
+          // Рисуем верхнюю сторону (вправо)
+          pathSquare.lineTo(figure.x + size || 30, figure.y);
+          // Рисуем правую сторону (вниз)
+          pathSquare.lineTo(figure.x + size, figure.y + size);    
+          // Рисуем нижнюю сторону (влево)
+          pathSquare.lineTo(figure.x, figure.y + size);
+          // Замыкаем фигуру (линия вверх к начальной точке)
+          pathSquare.close(); 
+    
+          canvas.drawPath(pathSquare, fillPaint);
+          pathSquare.delete();
+        }
+      
+        case 'triangle': {
+          // создаем новый путь
+          const pathTriangle = new CanvasKit.Path();        
+          // Начинаем путь из первой вершины
+          pathTriangle.moveTo(figure.x, figure.y);
+          // Проводим линию ко второй вершине
+          pathTriangle.lineTo(figure.xl, figure.yl);
+          // Проводим линию к третьей вершине
+          pathTriangle.lineTo(figure.xr, figure.yr);
+          // Замыкаем фигуру (проводит линию от третьей точки обратно к первой)
+          pathTriangle.close(); 
+          // рисуем весь путь
+          canvas.drawPath(pathTriangle, fillPaint);
+          // чистим
+          pathTriangle.delete();
+          break;
+        }
+      
+        case 'line': {
+    
         break;
+
+       }
+      
+        case 'text': {
+   
+        }
+      
+        case 'png': {
+       // Для PNG нужно загрузить изображение
+  
+       break;
+        }
       }
-    }
+    fillPaint.delete();
   });
 };
