@@ -24,7 +24,6 @@ const SkiaCanvas = () => {
         // Загружаем скрипт
         const script = document.createElement('script');
         script.src = 'https://unpkg.com/canvaskit-wasm@0.39.1/bin/canvaskit.js';
-        
         await new Promise((resolve, reject) => {
           script.onload = resolve;
           script.onerror = reject;

@@ -1,8 +1,8 @@
-import exportToPdf from "@/exportToPdf/exportToPdf";
+import exportToPdf  from "@/exportToPdf/exportToPdf";
 import { useSkiaStore } from "@/store/skiaStore";
 
 const ExpPdfBut = (): React.JSX.Element => {
-  const skiaFigures = useSkiaStore((state) => state.skiaFigures);
+   const skiaFigures = useSkiaStore((state) => state.skiaFigures);
   const handleClick = async () => {
     await exportToPdf(skiaFigures);
    }

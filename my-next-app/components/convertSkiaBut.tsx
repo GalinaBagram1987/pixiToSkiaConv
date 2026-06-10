@@ -4,22 +4,19 @@ import { renderSkiaFromPixi } from "@/renders/skiaFromPixi";
 
 const ConvertSkiaBut = (): React.JSX.Element => {
    const pixiFigures = usePixiStore((state) => state.figures);
-  const { surface, canvasKit, skiaContainer, setSkiaFigures } = useSkiaStore();
+   const { surface, canvasKit, skiaContainer, setSkiaFigures } = useSkiaStore();
 
-  const handleConvert = async () => {
+   const handleConvert = async () => {
     if (!surface || !canvasKit) {
       console.error('Surface или CanvasKit не инициализированы');
       return;
     }
-
     if (!skiaContainer) {
       console.error('skiaContainer не инициализирован');
       return;
     }
-
     // Сохраняем фигуры для PDF
     setSkiaFigures(pixiFigures);
-    
     // Рендерим в Skia
     await renderSkiaFromPixi(surface, pixiFigures, canvasKit, skiaContainer);
   };
